@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BWI Airport WiFi Portal</title>
+    <link rel="stylesheet" href="/src/index.css">
+    <script defer type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <div 
+      x-data="wifiPortal"
+      class="bg-airport"
+    >
+      <div class="bg-overlay"></div>
+      
+      <!-- Welcome Page -->
+      <div 
+        x-show="currentPage === 'welcome'" 
+        x-transition:enter="fade-enter-active"
+        x-transition:enter-start="fade-enter-from"
+        x-transition:leave="fade-leave-active"
+        x-transition:leave-end="fade-leave-to"
+        class="relative min-h-screen flex items-center justify-center p-4"
+      >
+        <div class="max-w-md w-full glass-morphism rounded-lg shadow-lg p-6">
+          <img src="/images/bwi-logo.svg" alt="BWI Airport" class="h-16 mx-auto mb-6">
+          <h1 class="text-2xl font-bold text-center mb-4">Welcome to BWI Airport WiFi</h1>
+          <p class="text-gray-600 mb-6">Please accept our terms and conditions to continue.</p>
+          <div class="mb-4">
+            <label class="flex items-center">
+              <input type="checkbox" x-model="termsAccepted" class="rounded border-gray-300">
+              <span class="ml-2 text-sm text-gray-600">I accept the terms and conditions</span>
+            </label>
+          </div>
+          <button 
+            @click="goToVideo"
+            :disabled="!termsAccepted"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          >
+            Continue
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Page -->
+      <div 
+        x-show="currentPage === 'video'"
+        x-transition:enter="fade-enter-active"
+        x-transition:enter-start="fade-enter-from"
+        x-transition:leave="fade-leave-active"
+        x-transition:leave-end="fade-leave-to"
+        class="relative min-h-screen flex items-center justify-center p-4"
+      >
+        <div class="max-w-2xl w-full glass-morphism rounded-lg shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Please watch this short advertisement</h2>
+          <div class="relative">
+            <video 
+              x-ref="videoPlayer"
+              class="w-full rounded-lg"
+              :src="VIDEO_CONFIG.VIDEO_PATH"
+              @timeupdate="handleTimeUpdate"
+              @ended="handleVideoEnd"
+            >
+            </video>
+            <button 
+              x-show="canSkip"
+              @click="skipVideo"
+              class="absolute bottom-4 right-4 bg-white text-gray-800 py-2 px-4 rounded-lg shadow hover:bg-gray-100 transition"
+            >
+              Skip Ad
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final Page -->
+      <div 
+        x-show="currentPage === 'final'"
+        x-transition:enter="fade-enter-active"
+        x-transition:enter-start="fade-enter-from"
+        x-transition:leave="fade-leave-active"
+        x-transition:leave-end="fade-leave-to"
+        class="relative min-h-screen flex items-center justify-center p-4"
+      >
+        <div class="max-w-md w-full glass-morphism rounded-lg shadow-lg p-6 text-center">
+          <svg class="w-16 h-16 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          <h2 class="text-2xl font-bold mb-4">You're Connected!</h2>
+          <p class="text-gray-600 mb-6">Enjoy your free WiFi access at BWI Airport</p>
+          <div class="text-sm text-gray-500">
+            Network: {{ NETWORK_CONFIG.SSID }}<br>
+            Valid for: {{ NETWORK_CONFIG.VALIDITY_HOURS }} hours
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
